@@ -6,8 +6,8 @@
 
 class EOM {
 	public:
-		EOM(double x_, double v_, double k_, double m_, double dt_, int n_)
-			: x(x_), v(v_), k(k_), m(m_), dt(dt_), n(n_), count(0) {};
+		EOM(double x_, double v_, double k_, double b_, double m_, double dt_, int n_)
+			: x(x_), v(v_), k(k_), b(b_), m(m_), dt(dt_), n(n_), count(0) {};
 		double calculate() {
 
 			if (count >= n) {
@@ -33,8 +33,9 @@ class EOM {
 			v = v_;
 			return;
 		}
-		void setParam(double k_, double m_) {
+		void setParam(double k_, double b_, double m_) {
 			k = k_;
+			b = b_;
 			m = m_;
 			return;
 		}
@@ -44,13 +45,15 @@ class EOM {
 
 	private:
 		double x, v;
-		double k, m;
+		double k, b, m;
 		double dt;
 		int n, count;
 
 		//Ž¿“_‚É‰Á‚í‚é—Í
-		double F_(double x, double v) {
-			return -k / m * x;
+		double F_(double x, double v)
+		{
+			double G = 9.8;
+			return -k / m * x + G + -b / m * v;
 		}
 		//dx/dt = v;
 		double V_(double v) {
