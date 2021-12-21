@@ -1,10 +1,13 @@
 ﻿#include <stdlib.h>
 #include <GL/glut.h>
 #include "./eom.hpp"
+// #include "./spring.hpp"
 
 
 constexpr double delta_t = 10.0;
-EOM eom(1.0, 2.0, 0.7, 5.0, 1.0 / delta_t, 10000);
+// x, v, k, b, m, dt, n
+// Spring spring(0.0, 1.0, 1.0, 1.0, 1.0 / delta_t, 10000);
+EOM eom(0.0, 0.0, 0.3, 0.1, 2.5, 1.0 / delta_t, 10000);
 
 GLfloat axis[4][2] = {
         {0.0, 0.0},
@@ -14,7 +17,7 @@ GLfloat axis[4][2] = {
 };
 
 GLfloat g[3] = {
-    0.0, 0.0, 0.0
+    0.0, 0.0, 0.5
 };
 
 void gtoAxis(GLfloat x, GLfloat y, GLfloat size) {
@@ -43,15 +46,16 @@ void gtoAxis(GLfloat x, GLfloat y, GLfloat size) {
 
 void timer(int value) {
     double y = eom.calculate();
+
     if (y == -1.0) {
-        printf("%f\n", y);
+        printf("Fuck! %f\n", y);
         return;
     }
     printf("%f\n", y);
 
-    for (int i{}; i < 3; ++i) {
-        g[i] = y / 5;
-    }
+    g[1] = y / -100; 
+    // g[2] = y / -200;
+    gtoAxis(g[0], g[1], g[2]);
 
     glutPostRedisplay();
     glutTimerFunc(delta_t, timer, 0);
@@ -62,18 +66,12 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
     glColor3d(1.0, 0.0, 0.0);
-    
-    gtoAxis(g[0], g[1], g[2]);
+
+    // born(axis[i][0], axis[i][1]);
 
     glBegin(GL_LINE_LOOP);
     for (int i{}; i < 4; ++i) {
         glVertex2d(axis[i][0], axis[i][1]);
-    }
-    glEnd();
-
-    glBegin(GL_LINE_LOOP);
-    for (int i{}; i < 4; ++i) {
-        glVertex2d(axis[i][0]+0.1, axis[i][1]-0.1);
     }
     glEnd();
 
