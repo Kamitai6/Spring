@@ -1,24 +1,16 @@
 ﻿#include <stdlib.h>
 #include <GL/glut.h>
-#include "./eom.hpp"
-// #include "./spring.hpp"
+// #include "./eom.hpp"
+#include "./spring.hpp"
 
 
-constexpr double delta_t = 10.0;
+constexpr double delta_t = 1.0 / 10.0;
 // x, v, k, b, m, dt, n
-// Spring spring(0.0, 1.0, 1.0, 1.0, 1.0 / delta_t, 10000);
-EOM eom(0.0, 0.0, 0.3, 0.1, 2.5, 1.0 / delta_t, 10000);
+/Spring spring(delta_t, 100);
+// EOM eom(0.0, 0.0, 0.3, 0.1, 2.5, 1.0 / delta_t, 10000);
 
-GLfloat axis[4][2] = {
-        {0.0, 0.0},
-        {0.0, 0.0},
-        {0.0, 0.0},
-        {0.0, 0.0}
-};
-
-GLfloat g[3] = {
-    0.0, 0.0, 0.5
-};
+GLfloat axis[4][2] = {};
+GLfloat g[3] = {};
 
 void gtoAxis(GLfloat x, GLfloat y, GLfloat size) {
     axis[0][0] = x - (size / 2);
@@ -30,33 +22,32 @@ void gtoAxis(GLfloat x, GLfloat y, GLfloat size) {
     axis[3][0] = x - (size / 2);
     axis[3][1] = y + (size / 2);
 
-    for (int i{}; i < 4; ++i) {
-        for (int j{}; j < 2; ++j) {
-            if (axis[i][j] >= 0.99) {
-                axis[i][j] = 0.99;
-            }
-            else if (axis[i][j] < -0.99) {
-                axis[i][j] = -0.99;
-            }
-        }
+    template<typename T>
+    static inline T Restrain(T x, T limit) {
+        return ((x)<(-limit)?(-limit):((x)>(limit)?(limit):(x)));
     }
 
+    for (int i{}; i < 4; ++i) {
+        for (int j{}; j < 2; ++j) {
+            Restrain<double>(axis[i][j], 0.99);
+        }
+    }
     return;
 }
 
 void timer(int value) {
-    double y = eom.calculate();
-
-    if (y == -1.0) {
-        printf("Fuck! %f\n", y);
-        return;
+    auto predict = spring.calculate();
+    for(auto& x : predict) {
+        if (x == -1.0) {
+            printf("Fuck! %f\n", x);
+            return;
+        }
+        else {
+            g[1] = x / -100;
+            printf("%f\n", y);
+        }
     }
-    printf("%f\n", y);
-
-    g[1] = y / -100; 
-    // g[2] = y / -200;
     gtoAxis(g[0], g[1], g[2]);
-
     glutPostRedisplay();
     glutTimerFunc(delta_t, timer, 0);
 }
@@ -67,13 +58,7 @@ void display(void)
     glLoadIdentity();
     glColor3d(1.0, 0.0, 0.0);
 
-    // born(axis[i][0], axis[i][1]);
-
-    glBegin(GL_LINE_LOOP);
-    for (int i{}; i < 4; ++i) {
-        glVertex2d(axis[i][0], axis[i][1]);
-    }
-    glEnd();
+    spring.showObject();
 
     glFlush();
 }

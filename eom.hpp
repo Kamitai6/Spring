@@ -6,10 +6,12 @@
 
 class EOM {
 	public:
-		EOM(double x_, double v_, double k_, double b_, double m_, double dt_, int n_)
-			: x(x_), v(v_), k(k_), b(b_), m(m_), dt(dt_), n(n_), count(0) {};
+		EOM() : x(0.0), v(0.0), k(0.2), b(0.2), m(1.0), dt(0.01), n(0), count(0) {}
+		EOM(double x_, double v_, double k_, double b_, double m_, double dt_, int s)
+			: x(x_), v(v_), k(k_), b(b_), m(m_), dt(dt_), n(0), count(0) {
+				n = static_cast<int>(s / dt);
+			};
 		double calculate() {
-
 			if (count >= n) {
 				return -1.0;
 			}
@@ -49,7 +51,7 @@ class EOM {
 		double dt;
 		int n, count;
 
-		//Ž¿“_‚É‰Á‚í‚é—Í
+		//
 		double F_(double x, double v)
 		{
 			double G = 9.8;
