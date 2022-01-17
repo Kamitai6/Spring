@@ -6,11 +6,16 @@
 
 constexpr double delta_t = 1.0 / 10.0;
 // x, v, k, b, m, dt, n
-/Spring spring(delta_t, 100);
+Spring spring(delta_t, 100);
 // EOM eom(0.0, 0.0, 0.3, 0.1, 2.5, 1.0 / delta_t, 10000);
 
 GLfloat axis[4][2] = {};
 GLfloat g[3] = {};
+
+template<typename T>
+static inline T Restrain(T x, T limit) {
+    return ((x) < (-limit) ? (-limit) : ((x) > (limit) ? (limit) : (x)));
+}
 
 void gtoAxis(GLfloat x, GLfloat y, GLfloat size) {
     axis[0][0] = x - (size / 2);
@@ -21,11 +26,6 @@ void gtoAxis(GLfloat x, GLfloat y, GLfloat size) {
     axis[2][1] = y + (size / 2);
     axis[3][0] = x - (size / 2);
     axis[3][1] = y + (size / 2);
-
-    template<typename T>
-    static inline T Restrain(T x, T limit) {
-        return ((x)<(-limit)?(-limit):((x)>(limit)?(limit):(x)));
-    }
 
     for (int i{}; i < 4; ++i) {
         for (int j{}; j < 2; ++j) {
@@ -44,12 +44,12 @@ void timer(int value) {
         }
         else {
             g[1] = x / -100;
-            printf("%f\n", y);
+            printf("%f\n", x);
         }
     }
     gtoAxis(g[0], g[1], g[2]);
     glutPostRedisplay();
-    glutTimerFunc(delta_t, timer, 0);
+    glutTimerFunc(static_cast<int>(1/delta_t), timer, 0);
 }
 
 void display(void)
