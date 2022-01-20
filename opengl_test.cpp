@@ -4,7 +4,7 @@
 
 
 constexpr double delta_t = 1.0 / 10.0;
-Spring spring(delta_t, 10);
+Spring spring(delta_t, 1);
 
 void timer(int value) {
     glutPostRedisplay();
