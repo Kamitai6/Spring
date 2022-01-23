@@ -21,22 +21,27 @@ class Spring {
 		Spring(double dt, int num) : eoms{}, axis{}, g{}, xaxis{}, size{} {
 			std::random_device seed_gen;
 			std::mt19937 engine(seed_gen());
-			std::uniform_real_distribution<> dist1(0.0, 1.0);
+			std::uniform_real_distribution<> dist1(0.4, 0.9);
+			std::uniform_real_distribution<> dist2(-1.0, 1.0);
 
 			for (int i{}; i < num; ++i) {
-				double x = 0.0; //dist1(engine);
-				double v = 0.0; //dist1(engine);
-				double k = std::abs(dist1(engine) / 2.0);
-				double b = std::abs(dist1(engine) / 3.0);
+				double x = -200.0; //dist2(engine);
+				double v = 0.0; //dist2(engine);
+				double k = dist1(engine) / 2.0;
+				double b = 0.0;
 				double m = std::abs(dist1(engine) * 5.0);
 				std::cout << x << " " << v << " " << k << " " << b << " " << m << std::endl;
 				eoms.emplace_back(std::move(EOM(x, v, k, b, m, dt, 1000)));
-				xaxis.emplace_back(dist1(engine));
-				size.emplace_back(dist1(engine));
-
+				xaxis.emplace_back(dist2(engine));
+				size.emplace_back(dist2(engine));
 			}
 		}
 		void showObject() {
+			std::random_device seed_gen;
+			std::mt19937 engine(seed_gen());
+			std::uniform_real_distribution<> dist3(0.0, 1.0);
+			std::uniform_real_distribution<> dist4(-1.0, 1.0);
+
 		    auto yaxis = calculate();
 			
 			auto x_b = xaxis.begin();
@@ -47,7 +52,8 @@ class Spring {
 			auto s_e = size.end();
 			while (x_b != x_e || y_b != y_e || s_b != s_e)
 			{
-				gtoAxis(*y_b, *y_b, *s_b);
+				glColor3d(dist3(engine), dist3(engine), dist3(engine));
+				gtoAxis(*y_b * *x_b, *y_b * *s_b, *s_b);
 				glBegin(GL_LINE_LOOP);
 				for (int i{}; i < 4; ++i) { glVertex2d(axis[i][0], axis[i][1]); std::cout << axis[i][0] << " " << axis[i][1] << std::endl;
 				}
@@ -84,7 +90,7 @@ class Spring {
 				if (std::abs(a) > max) max = std::abs(a);
 			}
 			for (auto& d : x) {
-				d /= 1000;
+				d /= 100;
 			}
 			return x;
 		}

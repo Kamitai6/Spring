@@ -4,7 +4,7 @@
 
 
 constexpr double delta_t = 1.0 / 10.0;
-Spring spring(delta_t, 1);
+Spring spring(delta_t, 100); //num
 
 void timer(int value) {
     glutPostRedisplay();
@@ -15,7 +15,6 @@ void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
-    glColor3d(1.0, 0.0, 0.0);
 
     spring.showObject();
 
@@ -24,7 +23,7 @@ void display(void)
 
 void init(void)
 {
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
 }
 
 
