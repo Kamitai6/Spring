@@ -30,10 +30,10 @@ class Spring {
 				double k = dist1(engine) / 2.0;
 				double b = 0.0;
 				double m = std::abs(dist1(engine) * 5.0);
-				std::cout << x << " " << v << " " << k << " " << b << " " << m << std::endl;
+				// std::cout << x << " " << v << " " << k << " " << b << " " << m << std::endl;
 				eoms.emplace_back(std::move(EOM(x, v, k, b, m, dt, 1000)));
-				xaxis.emplace_back(dist2(engine));
-				size.emplace_back(dist2(engine));
+				xaxis.emplace_back(/*-1.0 + ((2.0/num) * i)*/dist2(engine));
+				size.emplace_back (/* 1.0 - ((2.0/num) * i)*/dist2(engine));
 			}
 		}
 		void showObject() {
@@ -55,7 +55,9 @@ class Spring {
 				glColor3d(dist3(engine), dist3(engine), dist3(engine));
 				gtoAxis(*y_b * *x_b, *y_b * *s_b, *s_b);
 				glBegin(GL_LINE_LOOP);
-				for (int i{}; i < 4; ++i) { glVertex2d(axis[i][0], axis[i][1]); std::cout << axis[i][0] << " " << axis[i][1] << std::endl;
+				for (int i{}; i < 4; ++i) {
+					glVertex2d(axis[i][0], axis[i][1]);
+					//std::cout << axis[i][0] << " " << axis[i][1] << std::endl;
 				}
 				glEnd();
 				if (x_b != x_e) { ++x_b; }
@@ -90,7 +92,7 @@ class Spring {
 				if (std::abs(a) > max) max = std::abs(a);
 			}
 			for (auto& d : x) {
-				d /= 100;
+				d /= 200;
 			}
 			return x;
 		}
